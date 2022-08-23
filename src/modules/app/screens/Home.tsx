@@ -2,7 +2,7 @@ import React, { FunctionComponent, useCallback } from 'react'
 import { useTheme } from '../../design'
 import Icon from 'react-native-vector-icons/Feather'
 import { Button, Screen } from '../../shared'
-import { ProjectsList } from '../../project'
+import { ProjectsList } from '../../challenge'
 
 export const HomeScreen: FunctionComponent = () => {
   const theme = useTheme()
