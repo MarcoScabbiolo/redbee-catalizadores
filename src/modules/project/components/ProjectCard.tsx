@@ -54,7 +54,6 @@ const styles = StyleSheet.create<{
   title: TextStyle
   description: TextStyle
   status: TextStyle
-  status: TextStyle
 }>({
   header: {
     flexDirection: 'row',
