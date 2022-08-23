@@ -10,26 +10,28 @@ import {
 import Icon from 'react-native-vector-icons/Feather'
 import { useTheme } from '../../design'
 import { Card } from '../../shared'
-import { Project, projectStatusLabel } from '../domain/Project'
+import { Challenge, challengeStatusLabel } from '../domain/Challenge'
 
 export interface ProjectCardProps {
-  project: Project
+  challenge: Challenge
   style?: StyleProp<ViewStyle>
+  navigate?: boolean
 }
 
-export const ProjectCard: FunctionComponent<ProjectCardProps> = ({
-  project,
+export const ChallengeCard: FunctionComponent<ProjectCardProps> = ({
+  challenge,
   style,
+  navigate = false,
 }) => {
   const theme = useTheme()
 
-  const navigateToProject = useCallback(() => {}, [])
+  const navigateToChallenge = useCallback(() => {}, [])
 
   return (
-    <Card onPress={navigateToProject} style={style}>
+    <Card onPress={navigate ? navigateToChallenge : undefined} style={style}>
       <View style={styles.header}>
         <Text style={[styles.title, { color: theme.colors.text }]}>
-          {project.name}
+          {challenge.name}
         </Text>
         <Icon
           style={styles.icon}
@@ -39,10 +41,10 @@ export const ProjectCard: FunctionComponent<ProjectCardProps> = ({
         />
       </View>
       <Text style={[styles.description, { color: theme.colors.text }]}>
-        {project.description}
+        {challenge.description}
       </Text>
       <Text style={[styles.status, { color: theme.colors.text }]}>
-        {projectStatusLabel(project.status)}
+        {challengeStatusLabel(challenge.status)}
       </Text>
     </Card>
   )

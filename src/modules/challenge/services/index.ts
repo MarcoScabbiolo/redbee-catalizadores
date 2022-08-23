@@ -1,1 +1,1 @@
-export * from './ProjectRepository'
+export * from './ChallengeRepository'

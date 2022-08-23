@@ -1,2 +1,2 @@
-export * from './ProjectCard'
-export * from './ProjectsList'
+export * from './ChallengeCard'
+export * from './ChallengesList'

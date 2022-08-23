@@ -1,2 +1,2 @@
-export * from './Project'
-export * from './ProjectStatus'
+export * from './Challenge'
+export * from './ChallengeStatus'

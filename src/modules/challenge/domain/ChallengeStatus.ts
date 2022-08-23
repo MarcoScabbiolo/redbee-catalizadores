@@ -1,4 +1,4 @@
-export enum ProjectStatus {
+export enum ChallengeStatus {
   Prospect = 0,
   Proposal = 1,
   Announcement = 2,

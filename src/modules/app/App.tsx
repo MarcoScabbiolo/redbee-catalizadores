@@ -2,13 +2,15 @@ import { NavigationContainer } from '@react-navigation/native'
 import React, { FunctionComponent, PropsWithChildren } from 'react'
 import { ThemeProvider } from '../design'
 import { ErrorProvider } from '../error'
-import { ProjectProvider } from '../challenge'
+import { ChallengeProvider } from '../challenge'
 import { TabNavigator } from './TabNavigator'
+import { UserProvider } from '../user'
 
 const providers: FunctionComponent<PropsWithChildren>[] = [
   ErrorProvider,
   ThemeProvider,
-  ProjectProvider,
+  UserProvider,
+  ChallengeProvider,
   NavigationContainer as FunctionComponent<PropsWithChildren>,
 ]
 

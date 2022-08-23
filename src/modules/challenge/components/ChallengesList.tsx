@@ -5,24 +5,24 @@ import {
   StyleSheet,
   ViewStyle,
 } from 'react-native'
-import { Project } from '../domain'
-import { useProjects } from '../hooks'
-import { ProjectCard } from './ProjectCard'
+import { Challenge } from '../domain'
+import { useAllChallenges } from '../hooks'
+import { ChallengeCard } from './ChallengeCard'
 
-export const ProjectsList: FunctionComponent = () => {
-  const projects = useProjects()
+export const ChallengesList: FunctionComponent = () => {
+  const projects = useAllChallenges()
 
   const renderItem = useCallback(
-    ({ item }: ListRenderItemInfo<Project>) => (
-      <ProjectCard project={item} style={styles.card} />
+    ({ item }: ListRenderItemInfo<Challenge>) => (
+      <ChallengeCard challenge={item} style={styles.card} />
     ),
     [],
   )
 
-  const keyExtractor = useCallback((item: Project) => item.name, [])
+  const keyExtractor = useCallback((item: Challenge) => item.name, [])
 
   return (
-    <FlatList<Project>
+    <FlatList<Challenge>
       renderItem={renderItem}
       keyExtractor={keyExtractor}
       data={projects}

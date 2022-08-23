@@ -1,18 +1,18 @@
-export enum TabRoutes {
+export const enum TabRoutes {
   Home = 'tab-home',
   Discover = 'tab-discover',
   Profile = 'tab-profile',
 }
 
-export enum HomeRoutes {
+export const enum HomeRoutes {
   Home = 'home',
 }
 
-export enum DiscoverRoutes {
+export const enum DiscoverRoutes {
   Discover = 'discover',
 }
 
-export enum ProfileRoutes {
+export const enum ProfileRoutes {
   Profile = 'profile',
 }
 
