@@ -5,12 +5,14 @@ import { ErrorProvider } from '../error'
 import { ChallengeProvider } from '../challenge'
 import { TabNavigator } from './TabNavigator'
 import { UserProvider } from '../user'
+import { NewsProvider } from '../news'
 
 const providers: FunctionComponent<PropsWithChildren>[] = [
   ErrorProvider,
   ThemeProvider,
   UserProvider,
   ChallengeProvider,
+  NewsProvider,
   NavigationContainer as FunctionComponent<PropsWithChildren>,
 ]
 

@@ -1,6 +1,7 @@
 import { ChallengeStatus } from './ChallengeStatus'
 
 export interface Challenge {
+  id: string
   status: ChallengeStatus
   name: string
   description: string
