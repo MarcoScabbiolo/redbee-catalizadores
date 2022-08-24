@@ -38,7 +38,7 @@ export const HomeScreen: FunctionComponent = () => {
 
   const renderChallengeUpdateItem = useCallback(
     ({ item }: { item: ChallengeUpdate }) => (
-      <ChallengeUpdateCard challengeUpdate={item} />
+      <ChallengeUpdateCard style={styles.update} challengeUpdate={item} />
     ),
     [],
   )
@@ -86,11 +86,16 @@ export const HomeScreen: FunctionComponent = () => {
 const styles = StyleSheet.create<{
   carousel: ViewStyle
   carouselItem: ViewStyle
+  update: ViewStyle
 }>({
   carousel: {
     marginTop: 20,
   },
   carouselItem: {
     paddingHorizontal: 10,
+  },
+  update: {
+    marginTop: 10,
+    marginHorizontal: 20,
   },
 })

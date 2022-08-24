@@ -1,11 +1,10 @@
 import { BehaviorSubject, map, Observable } from 'rxjs'
-import { Challenge, ChallengeStatus } from '../domain'
-
-const INITIAL_MOCK_DATA_ENABLED = true
+import { MOCKED_CHALLENGES } from '../assets'
+import { Challenge } from '../domain'
 
 export class ChallengeRepository {
   private challengesSubject = new BehaviorSubject<Challenge[]>(
-    INITIAL_MOCK_DATA_ENABLED ? INITIAL_MOCK_DATA : [],
+    Array.from(MOCKED_CHALLENGES.values()),
   )
 
   challenges: Observable<Challenge[]>
@@ -24,12 +23,3 @@ export class ChallengeRepository {
     )
   }
 }
-
-const INITIAL_MOCK_DATA: Challenge[] = [
-  {
-    status: ChallengeStatus.Prospect,
-    name: 'A project',
-    description: 'We want to change the entire world and we will do it',
-    viewers: ['id'],
-  },
-]
