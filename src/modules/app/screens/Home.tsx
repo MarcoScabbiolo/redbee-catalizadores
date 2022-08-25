@@ -14,38 +14,53 @@ import {
 import {
   ChallengeUpdate,
   ChallengeUpdateCard,
+  useMyChallengesNews,
   useNewsByChallengeId,
-  useNewsByUserId,
 } from '../../news'
-import { useCurrentUser } from '../../user'
 
 export const HomeScreen: FunctionComponent = () => {
   const theme = useTheme()
   const myChallenges = useMyChallenges()
   const screenWidth = useWindowDimensions().width
-  const me = useCurrentUser()
   const [challenge, setChallenge] = useState<Challenge | undefined>()
 
-  const userNews = useNewsByUserId(me.id)
+  const userNews = useMyChallengesNews()
   const challengeNews = useNewsByChallengeId(challenge?.id)
 
   const addNew = useCallback(() => {}, [])
 
   const renderChallengeItem = useCallback(
-    ({ item }: { item: Challenge }) => <ChallengeCard challenge={item} />,
-    [],
-  )
-
-  const renderChallengeUpdateItem = useCallback(
-    ({ item }: { item: ChallengeUpdate }) => (
-      <ChallengeUpdateCard style={styles.update} challengeUpdate={item} />
+    ({ item }: { item: Challenge }) => (
+      <ChallengeCard
+        hideDescription
+        challenge={item}
+        hideFooter={item.id === '__all_mine__'}
+      />
     ),
     [],
   )
 
+  const challengeChanged = useCallback(
+    (index: number) => {
+      setChallenge(myChallenges[index - 1])
+    },
+    [myChallenges],
+  )
+
+  const renderChallengeUpdateItem = useCallback(
+    ({ item }: { item: ChallengeUpdate }) => (
+      <ChallengeUpdateCard
+        style={styles.update}
+        challengeUpdate={item}
+        hideChallenge={Boolean(challenge)}
+      />
+    ),
+    [challenge],
+  )
+
   const carouselData: Challenge[] = useMemo(
     () => [
-      { id: '__all_mine__', name: 'My challenges' } as Challenge,
+      { id: '__all_mine__', name: 'All my challenges' } as Challenge,
       ...myChallenges,
     ],
     [myChallenges],
@@ -65,7 +80,9 @@ export const HomeScreen: FunctionComponent = () => {
       }>
       <FlatList<ChallengeUpdate>
         data={challenge ? challengeNews : userNews}
+        contentContainerStyle={styles.list}
         renderItem={renderChallengeUpdateItem}
+        showsVerticalScrollIndicator={false}
         ListHeaderComponent={
           <Carousel<Challenge>
             containerCustomStyle={styles.carousel}
@@ -76,6 +93,7 @@ export const HomeScreen: FunctionComponent = () => {
             itemWidth={screenWidth - 70}
             vertical={false}
             inactiveSlideScale={1}
+            onSnapToItem={challengeChanged}
           />
         }
       />
@@ -87,9 +105,11 @@ const styles = StyleSheet.create<{
   carousel: ViewStyle
   carouselItem: ViewStyle
   update: ViewStyle
+  list: ViewStyle
 }>({
   carousel: {
     marginTop: 20,
+    marginBottom: 10,
   },
   carouselItem: {
     paddingHorizontal: 10,
@@ -97,5 +117,8 @@ const styles = StyleSheet.create<{
   update: {
     marginTop: 10,
     marginHorizontal: 20,
+  },
+  list: {
+    paddingBottom: 20,
   },
 })

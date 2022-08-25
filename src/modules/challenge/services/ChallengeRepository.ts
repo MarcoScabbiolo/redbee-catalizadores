@@ -19,7 +19,7 @@ export class ChallengeRepository {
 
   getByUserId(userId: string): Observable<Challenge[]> {
     return this.challenges.pipe(
-      map(cs => cs.filter(c => c.viewers.includes(userId))),
+      map(cs => cs.filter(c => c.owners.includes(userId))),
     )
   }
 }

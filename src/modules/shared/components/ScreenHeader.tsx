@@ -1,6 +1,7 @@
 import React, { FunctionComponent, PropsWithChildren } from 'react'
-import { StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
+import { StyleSheet, TextStyle, View, ViewStyle } from 'react-native'
 import { useTheme } from '../../design'
+import { Text } from './Text'
 
 export interface ScreenHeaderProps {
   title: string
@@ -13,7 +14,7 @@ export const ScreenHeader: FunctionComponent<
 
   return (
     <View style={[styles.header, { backgroundColor: theme.colors.background }]}>
-      <Text style={[styles.title, { color: theme.colors.text }]}>{title}</Text>
+      <Text style={styles.title}>{title}</Text>
       <View style={styles.right}>{children}</View>
     </View>
   )

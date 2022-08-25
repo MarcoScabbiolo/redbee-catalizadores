@@ -1,21 +1,48 @@
-import React, { FunctionComponent } from 'react'
-import { StyleProp, Text, ViewStyle } from 'react-native'
-import { Card } from '../../shared'
+import React, { FunctionComponent, useCallback } from 'react'
+import { StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-native'
+import { Card, Text } from '../../shared'
 import { ChallengeUpdate } from '../domain'
 
 export interface ChallengeUpdateCardProps {
   challengeUpdate: ChallengeUpdate
   style?: StyleProp<ViewStyle>
+  hideChallenge?: boolean
 }
 
 export const ChallengeUpdateCard: FunctionComponent<
   ChallengeUpdateCardProps
-> = ({ challengeUpdate, style }) => {
+> = ({ challengeUpdate, style, hideChallenge = false }) => {
+  const navigateToChallenge = useCallback(() => {}, [])
+
   return (
     <Card style={style}>
-      <Text>{challengeUpdate.by.id}</Text>
-      <Text>{challengeUpdate.description}</Text>
-      <Text>{challengeUpdate.challengeName}</Text>
+      <View style={styles.header}>
+        <Text style={styles.username}>{challengeUpdate.by.name}</Text>
+        {hideChallenge ? undefined : (
+          <Text style={styles.challenge} onPress={navigateToChallenge}>
+            {challengeUpdate.challengeName}
+          </Text>
+        )}
+      </View>
+      <Text style={styles.content}>{challengeUpdate.description}</Text>
     </Card>
   )
 }
+
+const styles = StyleSheet.create<{
+  header: ViewStyle
+  username: TextStyle
+  challenge: TextStyle
+  content: TextStyle
+}>({
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 15,
+  },
+  username: { fontSize: 14 },
+  challenge: { fontSize: 14 },
+  content: {
+    fontSize: 16,
+  },
+})

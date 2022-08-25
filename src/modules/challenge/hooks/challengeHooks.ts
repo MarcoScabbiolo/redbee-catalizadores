@@ -1,4 +1,5 @@
 import { useContext, useMemo } from 'react'
+import { map } from 'rxjs'
 import { useObservableSubscription } from '../../shared'
 import { useCurrentUser } from '../../user'
 import { ChallengeRepositoryContext } from '../context'
@@ -28,6 +29,21 @@ export const useMyChallenges = (): Challenge[] => {
   const observable = useMemo(
     () => repository.getByUserId(me.id),
     [me.id, repository],
+  )
+
+  return useObservableSubscription(observable) ?? []
+}
+
+export const useNotMyChallenges = (): Challenge[] => {
+  const repository = useChallengeRepository()
+  const me = useCurrentUser()
+
+  const observable = useMemo(
+    () =>
+      repository.challenges.pipe(
+        map(cs => cs.filter(c => !c.owners.includes(me.id))),
+      ),
+    [me.id, repository.challenges],
   )
 
   return useObservableSubscription(observable) ?? []
