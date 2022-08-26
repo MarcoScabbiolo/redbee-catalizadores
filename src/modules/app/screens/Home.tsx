@@ -1,4 +1,10 @@
-import React, { FunctionComponent, useCallback, useMemo, useState } from 'react'
+import React, {
+  FunctionComponent,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { useTheme } from '../../design'
 import Icon from 'react-native-vector-icons/Feather'
 import { Button, Screen } from '../../shared'
@@ -17,8 +23,13 @@ import {
   useMyChallengesNews,
   useNewsByChallengeId,
 } from '../../news'
+import { useNavigation } from '@react-navigation/native'
+import { HomeRoutes } from '../routes'
 
 export const HomeScreen: FunctionComponent = () => {
+  const list = useRef<FlatList<ChallengeUpdate>>(null)
+  const carousel = useRef<Carousel<Challenge>>(null)
+  const navigation = useNavigation()
   const theme = useTheme()
   const myChallenges = useMyChallenges()
   const screenWidth = useWindowDimensions().width
@@ -27,7 +38,28 @@ export const HomeScreen: FunctionComponent = () => {
   const userNews = useMyChallengesNews()
   const challengeNews = useNewsByChallengeId(challenge?.id)
 
+  const carouselData: Challenge[] = useMemo(
+    () => [
+      { id: '__all_mine__', name: 'All my challenges' } as Challenge,
+      ...myChallenges,
+    ],
+    [myChallenges],
+  )
+
   const addNew = useCallback(() => {}, [])
+
+  const challengePress = useCallback(
+    (challengeId: string) => {
+      list.current?.scrollToOffset({ offset: 0, animated: true })
+      setTimeout(() => {
+        carousel.current?.snapToItem(
+          carouselData.findIndex(c => c.id === challengeId),
+          true,
+        )
+      }, 250)
+    },
+    [carouselData],
+  )
 
   const renderChallengeItem = useCallback(
     ({ item }: { item: Challenge }) => (
@@ -35,9 +67,16 @@ export const HomeScreen: FunctionComponent = () => {
         hideDescription
         challenge={item}
         hideFooter={item.id === '__all_mine__'}
+        onPress={
+          item.id === '__all_mine__'
+            ? () => {
+                navigation.navigate(HomeRoutes.MyChallenges)
+              }
+            : undefined
+        }
       />
     ),
-    [],
+    [navigation],
   )
 
   const challengeChanged = useCallback(
@@ -53,17 +92,10 @@ export const HomeScreen: FunctionComponent = () => {
         style={styles.update}
         challengeUpdate={item}
         hideChallenge={Boolean(challenge)}
+        onPressChallenge={() => challengePress(item.challengeId)}
       />
     ),
-    [challenge],
-  )
-
-  const carouselData: Challenge[] = useMemo(
-    () => [
-      { id: '__all_mine__', name: 'All my challenges' } as Challenge,
-      ...myChallenges,
-    ],
-    [myChallenges],
+    [challenge, challengePress],
   )
 
   return (
@@ -79,12 +111,14 @@ export const HomeScreen: FunctionComponent = () => {
         </Button>
       }>
       <FlatList<ChallengeUpdate>
+        ref={list}
         data={challenge ? challengeNews : userNews}
         contentContainerStyle={styles.list}
         renderItem={renderChallengeUpdateItem}
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={
           <Carousel<Challenge>
+            ref={carousel}
             containerCustomStyle={styles.carousel}
             slideStyle={styles.carouselItem}
             data={carouselData}

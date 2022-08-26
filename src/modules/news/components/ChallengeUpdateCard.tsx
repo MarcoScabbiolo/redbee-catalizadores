@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useCallback } from 'react'
+import React, { FunctionComponent } from 'react'
 import { StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-native'
 import { Card, Text } from '../../shared'
 import { ChallengeUpdate } from '../domain'
@@ -7,19 +7,18 @@ export interface ChallengeUpdateCardProps {
   challengeUpdate: ChallengeUpdate
   style?: StyleProp<ViewStyle>
   hideChallenge?: boolean
+  onPressChallenge?: () => void
 }
 
 export const ChallengeUpdateCard: FunctionComponent<
   ChallengeUpdateCardProps
-> = ({ challengeUpdate, style, hideChallenge = false }) => {
-  const navigateToChallenge = useCallback(() => {}, [])
-
+> = ({ challengeUpdate, style, hideChallenge = false, onPressChallenge }) => {
   return (
     <Card style={style}>
       <View style={styles.header}>
         <Text style={styles.username}>{challengeUpdate.by.name}</Text>
         {hideChallenge ? undefined : (
-          <Text style={styles.challenge} onPress={navigateToChallenge}>
+          <Text style={styles.challenge} onPress={onPressChallenge}>
             {challengeUpdate.challengeName}
           </Text>
         )}

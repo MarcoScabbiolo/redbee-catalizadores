@@ -9,30 +9,47 @@ import {
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Feather'
 import FAIcon from 'react-native-vector-icons/FontAwesome'
+import IOIcon from 'react-native-vector-icons/Ionicons'
 import { useTheme } from '../../design'
 import {
+  useChallengeInvestment,
+  useChallengeMatch,
+  useChallengeNetWorth,
   useChallengeVotes,
   useMyVoteInChallenge,
   useSolutionProposalCountByChallengeId,
 } from '../../news'
 import { Card, Text } from '../../shared'
+import { formatCurrency } from '../../shared/utils/numberUtils'
 import { useCurrentUser } from '../../user'
 import { Challenge, ChallengeStatus, challengeStatusLabel } from '../domain'
 
-export interface ProjectCardProps {
+export interface ChallengeCardProps {
   challenge: Challenge
   style?: StyleProp<ViewStyle>
   navigate?: boolean
   hideDescription?: boolean
   hideFooter?: boolean
+  onPress?: () => void
 }
 
-export const ChallengeCard: FunctionComponent<ProjectCardProps> = ({
+const Currency: FunctionComponent<{ money: number }> = ({ money }) => {
+  const theme = useTheme()
+  return (
+    <View style={styles.voteContainer}>
+      <Icon name="dollar-sign" color={theme.colors.success} size={20} />
+      <Text style={styles.voteCount}>{formatCurrency(money)}</Text>
+    </View>
+  )
+}
+
+export const ChallengeCard: FunctionComponent<ChallengeCardProps> = ({
   challenge,
   style,
   navigate = false,
   hideDescription = false,
   hideFooter = false,
+  onPress,
 }) => {
   const theme = useTheme()
   const me = useCurrentUser()
@@ -42,11 +59,14 @@ export const ChallengeCard: FunctionComponent<ProjectCardProps> = ({
   const solutionProposalCount = useSolutionProposalCountByChallengeId(
     challenge.id,
   )
+  const match = useChallengeMatch(challenge.id)
+  const investment = useChallengeInvestment(challenge.id)
+  const netWorth = useChallengeNetWorth(challenge.id)
 
   const navigateToChallenge = useCallback(() => {}, [])
 
   return (
-    <Card onPress={navigate ? navigateToChallenge : undefined} style={style}>
+    <Card onPress={navigate ? navigateToChallenge : onPress} style={style}>
       <View style={styles.header}>
         <Text style={styles.title}>{challenge.name}</Text>
         <Icon
@@ -62,22 +82,47 @@ export const ChallengeCard: FunctionComponent<ProjectCardProps> = ({
       {hideFooter ? undefined : (
         <View style={styles.footer}>
           <View style={styles.footerIcons}>
-            <TouchableOpacity
-              disabled={cantVote}
-              onPress={vote}
-              style={styles.voteContainer}>
-              <FAIcon
-                name={cantVote || voted ? 'heart' : 'heart-o'}
-                size={20}
-                color="#ffb3ab"
-              />
-              <Text style={styles.voteCount}>{votes}</Text>
-            </TouchableOpacity>
+            {challenge.status >= ChallengeStatus.Proposal &&
+            challenge.status < ChallengeStatus.Match ? (
+              <TouchableOpacity
+                disabled={cantVote}
+                onPress={vote}
+                style={styles.voteContainer}>
+                <FAIcon
+                  name={cantVote || voted ? 'heart' : 'heart-o'}
+                  size={20}
+                  color="#ffb3ab"
+                />
+                <Text style={styles.voteCount}>{votes}</Text>
+              </TouchableOpacity>
+            ) : undefined}
+            {challenge.status >= ChallengeStatus.Match && match ? (
+              <View style={styles.voteContainer}>
+                <IOIcon
+                  name="ribbon"
+                  color={theme.colors.primaryLight}
+                  size={20}
+                />
+                <Text style={styles.voteCount}>{match.name}</Text>
+              </View>
+            ) : undefined}
             {challenge.status === ChallengeStatus.Announcement ? (
               <View style={styles.voteContainer}>
-                <FAIcon name="file-text" color="#AAA" size={20} />
+                <FAIcon
+                  name="file-text"
+                  color={theme.colors.primaryLight}
+                  size={20}
+                />
                 <Text style={styles.voteCount}>{solutionProposalCount}</Text>
               </View>
+            ) : undefined}
+            {challenge.status >= ChallengeStatus.Invested &&
+            challenge.status < ChallengeStatus.Ended &&
+            investment ? (
+              <Currency money={investment} />
+            ) : undefined}
+            {challenge.status >= ChallengeStatus.Ended && netWorth ? (
+              <Currency money={netWorth} />
             ) : undefined}
           </View>
           <Text style={styles.status}>

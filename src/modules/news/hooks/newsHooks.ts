@@ -2,9 +2,14 @@ import { useCallback, useContext, useMemo } from 'react'
 import { EMPTY, map } from 'rxjs'
 import { Challenge, useMyChallenges } from '../../challenge'
 import { useObservableSubscription } from '../../shared'
-import { useCurrentUser } from '../../user'
+import { useCurrentUser, User } from '../../user'
 import { NewsContext } from '../context'
-import { ChallengeUpdate, ChallengeUpdateType } from '../domain'
+import {
+  ChallengeInvestmentUpdate,
+  ChallengeMatchUpdate,
+  ChallengeUpdate,
+  ChallengeUpdateType,
+} from '../domain'
 import { NewsRepository } from '../services'
 
 export const useNewsRepository = (): NewsRepository => {
@@ -107,4 +112,77 @@ export const useSolutionProposalCountByChallengeId = (
   )
 
   return useObservableSubscription(observable) ?? 0
+}
+
+export const useChallengeMatch = (challengeId: string): User | undefined => {
+  const repository = useNewsRepository()
+
+  const observable = useMemo(
+    () =>
+      repository.news.pipe(
+        map(
+          ns =>
+            (
+              ns.find(
+                n =>
+                  n.challengeId === challengeId &&
+                  n.type === ChallengeUpdateType.Match,
+              ) as ChallengeMatchUpdate
+            )?.match,
+        ),
+      ),
+    [challengeId, repository.news],
+  )
+
+  return useObservableSubscription(observable)
+}
+
+export const useChallengeInvestment = (
+  challengeId: string,
+): number | undefined => {
+  const repository = useNewsRepository()
+
+  const observable = useMemo(
+    () =>
+      repository.news.pipe(
+        map(ns =>
+          ns
+            .filter(
+              n =>
+                n.challengeId === challengeId &&
+                n.type === ChallengeUpdateType.Investment,
+            )
+            .map(n => n as ChallengeInvestmentUpdate)
+            .reduce((total, n) => total + n.investment, 0),
+        ),
+        map(i => i || undefined),
+      ),
+    [challengeId, repository.news],
+  )
+
+  return useObservableSubscription(observable)
+}
+
+export const useChallengeNetWorth = (
+  challengeId: string,
+): number | undefined => {
+  const repository = useNewsRepository()
+
+  const observable = useMemo(
+    () =>
+      repository.news.pipe(
+        map(ns =>
+          ns.find(
+            n =>
+              n.challengeId === challengeId &&
+              n.type === ChallengeUpdateType.End,
+          ),
+        ),
+        map(n => n as ChallengeInvestmentUpdate),
+        map(n => n?.investment),
+      ),
+    [challengeId, repository.news],
+  )
+
+  return useObservableSubscription(observable)
 }

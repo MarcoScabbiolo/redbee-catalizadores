@@ -6,6 +6,7 @@ export const enum TabRoutes {
 
 export const enum HomeRoutes {
   Home = 'home',
+  MyChallenges = 'my-challenges',
 }
 
 export const enum DiscoverRoutes {
@@ -24,6 +25,7 @@ export type TabRoutesParamList = {
 
 export type HomeRoutesParamList = {
   [HomeRoutes.Home]: undefined
+  [HomeRoutes.MyChallenges]: undefined
 }
 
 export type DiscoverRoutesParamList = {
