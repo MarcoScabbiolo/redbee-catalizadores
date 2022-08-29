@@ -27,7 +27,7 @@ export const MOCKED_USERS: User[] = [
   },
   {
     id: '6',
-    name: 'redbee Studios',
+    name: 'redbee',
   },
   {
     id: '7',
