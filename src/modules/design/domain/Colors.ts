@@ -5,4 +5,5 @@ export interface Colors {
   onPrimary: string
   background: string
   success: string
+  border: string
 }

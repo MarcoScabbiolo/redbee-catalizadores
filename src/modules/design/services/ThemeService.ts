@@ -9,6 +9,7 @@ export class ThemeService {
       background: '#FFF',
       onPrimary: '#FFF',
       success: '#14a31d',
+      border: '#EEE',
     }
   }
 

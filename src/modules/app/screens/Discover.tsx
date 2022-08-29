@@ -19,7 +19,7 @@ export const DiscoverScreen: FunctionComponent = () => {
   )
 
   return (
-    <Screen>
+    <Screen safeTopPadding>
       <FlatList<Challenge>
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.list}
